@@ -1,5 +1,5 @@
-# my_library
+# My Library
 
-Youtube video link
+YouTube video link
 https://youtu.be/d17VwmiJ-VU
 
