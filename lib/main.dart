@@ -149,7 +149,7 @@ class _BookListState extends State<BookList> {
     } else {
       googleAPI = "https://www.googleapis.com/books/v1/volumes?q=";
     }
-
+    search = search.replaceAll(' ', '+');
     var data = await http.get(googleAPI + search);
     print(googleAPI + search);
 
@@ -249,29 +249,19 @@ class _BookListState extends State<BookList> {
               child: FutureBuilder(
                   future: _getBooks(), // getBook function
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.data == null && snapshot.connectionState == ConnectionState.none) {
-                      return Center(
-                        child: Container(
-                          height: 100.0,
-                          width: 170.0,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.85),
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                          child: Center(
-                            child: Column(
-                              children: <Widget>[
-                                Text(
-                                  "Search not found",
-                                  style: Theme.of(context).textTheme.subtitle2,
-                                ),
-                              ],
-                            ),
+                    if (snapshot.data == null && snapshot.connectionState == ConnectionState.waiting) {
+                      return Container(
+                        child: Center(
+                          child: SizedBox(
+                            child: CircularProgressIndicator(
+                                valueColor: new AlwaysStoppedAnimation<Color>(
+                                    Colors.white)),
+                            height: 100.0,
+                            width: 100.0,
                           ),
                         ),
                       );
-                    } else if (snapshot.hasData) {
-                      //use listview to display data
+                    } else if (snapshot.data != null) {
                       return ListView.builder(
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
@@ -319,15 +309,21 @@ class _BookListState extends State<BookList> {
                           );
                         },
                       );
+
                     } else {
-                      return Container(
-                        child: Center(
-                          child: SizedBox(
-                            child: CircularProgressIndicator(
-                                valueColor: new AlwaysStoppedAnimation<Color>(
-                                    Colors.white)),
-                            height: 100.0,
-                            width: 100.0,
+                      return Center(
+                        child: Container(
+                          height: 100.0,
+                          width: 170.0,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.85),
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Search not found",
+                              style: Theme.of(context).textTheme.subtitle2,
+                            ),
                           ),
                         ),
                       );
